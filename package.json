@@ -3,7 +3,7 @@
   "displayName": "classfold",
   "description": "把className内字符折叠",
   "version": "1.0.3",
-  "icon": "https://gcs-airbrush.mr.pixocial.com/5b5628dc8c16a57697dfb0cfb9ec1f12.jpeg",
+  "icon": "images/logo.jpeg",
   "engines": {
     "vscode": "^1.83.0"
   },
