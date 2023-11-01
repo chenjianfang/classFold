@@ -2,9 +2,14 @@
   "name": "chenjianfang",
   "displayName": "classfold",
   "description": "把className内字符折叠",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.83.0"
+  },
+  "publisher": "classFold",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chenjianfang/classFold.git"
   },
   "categories": [
     "Other"

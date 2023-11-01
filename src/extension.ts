@@ -2,10 +2,11 @@ import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	let excludeLine = [];
+	let excludeLine = {};
 
 	const ignoreEdit: any = {};
 
+	// 取消折叠
 	let disposable = vscode.commands.registerCommand('chenjianfang.classFold', () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
@@ -19,28 +20,45 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 
-	processActiveFile(excludeLine);
+	processActiveFile();
 
+	// 点击行取消折叠
 	vscode.window.onDidChangeTextEditorSelection(ev => {
+		if (ev.kind !== 2) {
+			return;
+		}
 		const editor = ev?.textEditor;
-		const start = editor?.selection.start;
-
 		const fsPath = editor.document.uri?.fsPath;
-
 		if (ignoreEdit[fsPath]) {
 			return;
 		}
-		
+
+		const start = editor?.selection.start;
+
 		const line = start.line;
-		excludeLine.push(line);
+		
+		if (!excludeLine[fsPath]) {
+			excludeLine[fsPath] = {};
+		}
+		excludeLine[fsPath][line] = 1;
+
 		processActiveFile(excludeLine);
+	});
+
+	// 打开编辑文件
+	vscode.workspace.onDidOpenTextDocument(ev => {
+		const fsPath = ev.uri?.fsPath;
+		if (ignoreEdit[fsPath]) {
+			return;
+		}
+
+		processActiveFile();
 	});
 
 	context.subscriptions.push(disposable);
 }
 
 export function deactivate() {}
-
 
 let decorationType = vscode.window.createTextEditorDecorationType({
 	borderWidth: '1px',
@@ -53,13 +71,15 @@ let decorationType = vscode.window.createTextEditorDecorationType({
 	}
 });
 
-function processActiveFile(excludeLine = []) {
+function processActiveFile(excludeLine = {}) {
 	try {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 				return;
 		}
 		const document = editor.document;
+
+		const fsPath = document.uri?.fsPath;
 	
 		const regEx = /className="([^"]*)"/g;
 	
@@ -76,7 +96,7 @@ function processActiveFile(excludeLine = []) {
 			const startPos = document.positionAt(startIndex);
 			const endPos = document.positionAt( startIndex+ item[1].length);
 	
-			if (excludeLine.includes(startPos?.line)) {
+			if (excludeLine?.[fsPath]?.[startPos?.line]) {
 				return;
 			}
 	
