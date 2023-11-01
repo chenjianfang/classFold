@@ -1,9 +1,8 @@
 # Change Log
 
-All notable changes to the "chenjianfang" extension will be documented in this file.
+## Release Notes
+### 1.0.0
+正式第一版
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+### 1.0.2
+修复打开多个文件bug
